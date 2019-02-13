@@ -15,6 +15,6 @@ class Game < ApplicationRecord
   end
 
   def self.leader_board_data
-    
+
   end
 end
