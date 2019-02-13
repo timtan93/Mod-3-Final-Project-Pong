@@ -13,4 +13,8 @@ class Game < ApplicationRecord
     sorted = Game.sort_score_desc
     Game.unique_scores(sorted)
   end
+
+  def self.leader_board_data
+    
+  end
 end

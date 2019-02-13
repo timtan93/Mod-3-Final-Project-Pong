@@ -27,5 +27,3 @@ end
 #     body: JSON.stringify({user_id: 3, score: 0 })
 # })
 # fetch('http://localhost:3000/games').then(resp => resp.json()).then(console.log)
-
-games.sort_by{|game| -game[:score]}.reverse
