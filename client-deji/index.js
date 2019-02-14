@@ -1,12 +1,10 @@
 const canvas = document.querySelector('#gameCanvas')
 let canvasContext = canvas.getContext('2d')
-// let canvasContext.font = "30px Verdana";
 let ballX = 50
 let ballY = 50
 let ballSpeedX = 20
 let ballSpeedY = 4
 let framesPerSecond = 30
-// let paddleOneY = 250
 let paddleOneHeight = 100
 let paddleOneThickness = 10
 let paddleTwoY = 250
@@ -18,9 +16,7 @@ const winningScore = 30
 let showingWinScreen = false
 let SERVER = 'http://10.218.2.156:3000/state'
 const URL = 'http://localhost:3000/games'
-// let state.duration = 0;
 let sent = false
-
 const state = {
   paddleOneY: 250,
   userId: null,
@@ -28,7 +24,6 @@ const state = {
   games: null,
   users: null
 }
-// the width of the ball can be changed over time to make the game more difficult
 
 function calculateMousePosition (evt) {
   let rect = canvas.getBoundingClientRect()
@@ -40,8 +35,6 @@ function calculateMousePosition (evt) {
     y: mouseY
   }
 }
-
-function renderScors () {}
 
 function getGames () {
   // return fetch('http://localhost:3000/games')
@@ -76,7 +69,6 @@ function winningScreen () {
     }
 
     if (playerTwoScore >= winningScore) {
-      
       canvasContext.fillText(
         `Game Over! You lasted ${Math.round(state.duration)} seconds!`,
         0,
@@ -119,8 +111,8 @@ function drawEverything (evt) {
   // show the scores
   canvasContext.fillStyle = 'white'
   // ctx.font = "30px Verdana";
-  canvasContext.font = "50px Unknown Font, sans-serif";
-  canvasContext.strokeStyle = "red"; // set stroke color to red
+  canvasContext.font = '50px Unknown Font, sans-serif'
+  canvasContext.strokeStyle = 'red' // set stroke color to red
   canvasContext.fillText(
     `You have ${30 - playerTwoScore} lives left`,
     canvas.width - 650,
@@ -147,9 +139,9 @@ function colorCircle (centerX, centerY, radius, drawColor) {
 
 function computerMovement () {
   let paddleTwoYCenter = paddleTwoY + paddleTwoHeight / 2
-  if (paddleTwoYCenter < ballY - 20) {
+  if (paddleTwoYCenter < ballY - 35) {
     paddleTwoY += 6
-  } else if (paddleTwoYCenter > ballY + 20) {
+  } else if (paddleTwoYCenter > ballY + 35) {
     paddleTwoY -= 6
   }
 }
@@ -165,33 +157,23 @@ function moveEverything () {
   //   paddleTwoThickness += 1
   //   paddleTwoHeight += 1
 
-  if (
-    ballY > paddleTwoY &&
-    ballY < paddleTwoY + paddleTwoHeight &&
-    ballX >= canvas.width - paddleTwoThickness
-  ) {
-    ballSpeedX = -ballSpeedX
-    let diff = ballY - (paddleTwoY + paddleTwoHeight / 2)
-    ballSpeedY = diff * 0.35
-  }
-
-  if (
-    ballY > state.paddleOneY &&
-    ballY < state.paddleOneY + paddleOneHeight &&
-    ballX <= 0 + paddleOneThickness
-  ) {
-    ballSpeedX = -ballSpeedX
-    let diff = ballY - (state.paddleOneY + paddleOneHeight / 2)
-    ballSpeedY = diff * 0.35
-  }
-
   if (ballX <= 0) {
-    playerTwoScore++
-    ballReset()
+    if (ballY > state.paddleOneY && ballY < state.paddleOneY + paddleOneHeight) {
+      ballSpeedX = -ballSpeedX
+      // let diff = ballY - (state.paddleOneY + paddleOneHeight / 2)
+      // ballSpeedY = diff * 0.35
+    } else {
+      playerTwoScore++
+      ballReset()
+    }
   }
-  if (ballX >= canvas.width) {
-    playerOneScore++
-    ballReset()
+
+  if (ballX > canvas.width) {
+    if (ballY > paddleTwoY && ballY < paddleTwoY + paddleTwoHeight) {
+      ballSpeedX = -ballSpeedX
+    } else {
+      ballReset()
+    }
   }
 
   if (ballY <= 0) {
@@ -200,6 +182,35 @@ function moveEverything () {
   if (ballY >= canvas.height) {
     ballSpeedY = -ballSpeedY
   }
+
+  // if (
+  //   ballY > paddleTwoY &&
+  //   ballY < paddleTwoY + paddleTwoHeight
+  //   // &&
+  //   // ballX >= canvas.width - paddleTwoThickness
+  // ) {
+  //   ballSpeedX = -ballSpeedX
+  //   let diff = ballY - (paddleTwoY + paddleTwoHeight / 2)
+  //   ballSpeedY = diff * 0.35
+  // } else if (
+  //   ballY > state.paddleOneY &&
+  //   ballY < state.paddleOneY + paddleOneHeight
+  //   // &&
+  //   // ballX <= 0 + paddleOneThickness
+  // ) {
+  //   ballSpeedX = -ballSpeedX
+  //   let diff = ballY - (state.paddleOneY + paddleOneHeight / 2)
+  //   ballSpeedY = diff * 0.35
+  // }
+
+  // if (ballX <= 0) {
+  //   playerTwoScore++
+  //   ballReset()
+  // }
+  // if (ballX >= canvas.width) {
+  //   playerOneScore++
+  //   ballReset()
+  // }
 }
 
 function ballReset () {
@@ -220,58 +231,39 @@ function handleMouseClick () {
   }
 }
 
-// function updateState() {
-//
-//     // get request to update state
-//     fetch(SERVER).then(resp => resp.json()).then(newState => state.paddleOneY = newState.paddleOneY).then(console.log)
-//
-//     fetch(SERVER, {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify(state)
-//     })
-//
+// function roundOne () {
+//   if (state.duration > 20) {
+//     clearInterval(roundOneInterval)
+//   }
+//   return (paddleOneHeight = paddleOneHeight * 0.9)
 // }
 
-function roundOne () {
-    if (state.duration > 20) {clearInterval(roundOneInterval)}
-  return (paddleOneHeight = paddleOneHeight * 0.9)
-  
-}
+// function roundTwo () {
+//   // if (state.duration < 20 || state.duration > 30) {
+//   //   // clearInterval(roundTwoInterval)
+//   //   // paddleTwoHeight = 0
+//   //   // paddleTwoThickness = 10
+//   //   return
+//   // }
 
-function roundTwo () {
-  // if (state.duration < 20 || state.duration > 30) {
-  //   // clearInterval(roundTwoInterval)
-  //   // paddleTwoHeight = 0
-  //   // paddleTwoThickness = 10 
-  //   return 
-  // }
+//   if (state.duration > 10) {
+//     clearInterval(roundTwoInterval)
+//     console.log('here')
+//     paddleTwoHeight = 100
+//     paddleTwoThickness = 10
+//     return
+//   }
 
-  if (state.duration > 10) {
-    clearInterval(roundTwoInterval)
-    console.log('here')
-    paddleTwoHeight = 100
-    paddleTwoThickness = 10 
-    return; 
-  }
- 
-  paddleOneHeight = 100
-  paddleTwoHeight = 200000000
-  paddleTwoThickness += 2
- 
-   
-    
-   
-  
-}
+//   paddleOneHeight = 100
+//   paddleTwoHeight = 200000000
+//   paddleTwoThickness += 2
+// }
 
-function roundThree () {
-  colorCircle(ballX, ballY, 10, 'white')
-}
+// function roundThree () {
+//   colorCircle(ballX, ballY, 10, 'white')
+// }
 
-function roundFour() {
-
-}
+// function roundFour () {}
 
 function handleFormSubmit () {
   document.querySelector('form').addEventListener('submit', () => {
@@ -301,11 +293,10 @@ function sendUserScore () {
   //     .then(console.log)
 }
 
-
-let roundTwoInterval = setInterval(roundTwo, 50)
+// let roundTwoInterval = setInterval(roundTwo, 50)
 function initalize () {
   // setInterval(updateState, 1000/10)
-  
+
   // let roundTwoInterval = setInterval(roundOne, 2000)
 
   setInterval(() => {
@@ -338,3 +329,38 @@ function initalize () {
 }
 
 handleFormSubmit()
+
+// const getLeadersArray = () =>{
+//     return fetch(`http://localhost:3000/leaders`)
+//           .then(resp => resp.json())
+//           .then(leaders => leaderboard = leaders)
+//           .then(console.log)
+// }
+// const leaderboard =
+// [{"name":"Tim", "score":80},
+// {"name":"Deji", "score":65},
+// {"name":"John", "score":33},
+// {"name":"hhh", "score":24},
+// {"name":"Harry", "score":0}]
+// const leadertable = document.createElement("table")
+// leadertable.className = "leaderboard"
+// leadertable.cellspace= 0
+// body = document.querySelector("body")
+// body.appendChild(leadertable)
+
+// const addALeader = (player) => {
+//     const tr = document.createElement('tr')
+//     tr.innerHTML =`<td>${player.name}</td><td>${player.score}</td>`
+//     leadertable.appendChild(tr)
+// }
+
+// const addLeaders = leaders => {
+//     leadertable.innerHTML =""
+//     const header = document.createElement("tr")
+//     header.innerHTML = '<th>Player</th><th>High <br> Score</th>'
+//     leadertable.appendChild(header)
+//     for (const leader of leaders)
+//     addALeader(leader)
+// }
+
+// addLeaders(leaderboard)
