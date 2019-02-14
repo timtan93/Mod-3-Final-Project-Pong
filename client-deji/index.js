@@ -18,6 +18,7 @@ let SERVER = 'http://10.218.2.156:3000/state'
 const URL = 'http://localhost:3000/games'
 let sent = false
 const roundOneInterval = setInterval(roundOne, 2000)
+const roundTwoInterval = setInterval(roundTwo, 100)
 const state = {
   paddleOneY: 250,
   userId: null,
@@ -169,7 +170,7 @@ function moveEverything () {
     }
   }
 
-  if (ballX > canvas.width) {
+  if (ballX > canvas.width - paddleTwoThickness) {
     if (ballY > paddleTwoY && ballY < paddleTwoY + paddleTwoHeight) {
       ballSpeedX = -ballSpeedX
     } else {
@@ -241,26 +242,22 @@ function roundOne () {
   return (paddleOneHeight = paddleOneHeight * 0.9)
 }
 
-// function roundTwo () {
-//   // if (state.duration < 20 || state.duration > 30) {
-//   //   // clearInterval(roundTwoInterval)
-//   //   // paddleTwoHeight = 0
-//   //   // paddleTwoThickness = 10
-//   //   return
-//   // }
+function roundTwo () {
+  if (state.duration > 40) {
+      paddleTwoHeight = 100
+      paddleTwoThickness = 10
+    clearInterval(roundTwoInterval)
 
-//   if (state.duration > 10) {
-//     clearInterval(roundTwoInterval)
-//     console.log('here')
-//     paddleTwoHeight = 100
-//     paddleTwoThickness = 10
-//     return
-//   }
+  }
 
-//   paddleOneHeight = 100
-//   paddleTwoHeight = 200000000
-//   paddleTwoThickness += 2
-// }
+  if (state.duration > 20) {
+          paddleTwoHeight = 200000000
+          paddleTwoThickness += 2
+
+  }
+
+
+}
 
 // function roundThree () {
 //   colorCircle(ballX, ballY, 10, 'white')
@@ -302,6 +299,7 @@ function initalize () {
 
   // let roundTwoInterval = setInterval(roundOne, 2000)
   roundOneInterval
+  roundTwoInterval
   setInterval(() => {
     if (!showingWinScreen) {
       state.duration += 1 / framesPerSecond
