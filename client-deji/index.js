@@ -41,20 +41,18 @@ function calculateMousePosition (evt) {
   }
 }
 
-function renderScors() {
-  
-}
+function renderScors () {}
 
 function getGames () {
-  return fetch('http://localhost:3000/games')
-    .then(resp => resp.json())
-    .then(games => (state.games = games))
+  // return fetch('http://localhost:3000/games')
+  //   .then(resp => resp.json())
+  //   .then(games => (state.games = games))
 }
 
 function getUsers () {
-  return fetch('http://localhost:3000/users')
-    .then(resp => resp.json())
-    .then(users => (state.users = users))
+  // return fetch('http://localhost:3000/users')
+  //   .then(resp => resp.json())
+  //   .then(users => (state.users = users))
 }
 
 function winningScreen () {
@@ -71,9 +69,9 @@ function winningScreen () {
     //   canvasContext.fillText('Left player won!!!', 350, 200)
     // } else
     if (!sent) {
-      sendUserScore()
-        .then(getGames)
-        .then(getUsers)
+      // sendUserScore()
+      //   .then(getGames)
+      //   .then(getUsers)
       sent = true
     }
 
@@ -96,7 +94,7 @@ function drawNet () {
 }
 function drawEverything (evt) {
   // draw the canvas
-
+  
   // paddleTwoHeight =  if (state.duration > 10) {
 
   // } ? canvas.height : paddleTwoHeight
@@ -152,6 +150,7 @@ function moveEverything () {
   if (showingWinScreen) {
     return
   }
+  
   computerMovement()
   ballX += ballSpeedX
   ballY += ballSpeedY
@@ -221,37 +220,53 @@ function handleMouseClick () {
 //
 // }
 
+function roundOne () {
+  return paddleOneHeight = paddleOneHeight * 0.9
+  
+}
+
+function roundTwo() {
+  paddleTwoHeight = 200000000
+  paddleTwoThickness += 2
+}
+
+function roundThree() {
+  colorCircle(ballX, ballY, 10, 'white')
+}
+
 function handleFormSubmit () {
   document.querySelector('form').addEventListener('submit', () => {
     event.preventDefault()
     sent = false
     initalize()
-    fetch('http://localhost:3000/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: event.target.name.value })
-    })
-      .then(resp => resp.json())
-      .then(user => (state.userId = user.id))
+    // fetch('http://localhost:3000/users', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ name: event.target.name.value })
+    // })
+    //   .then(resp => resp.json())
+    //   .then(user => (state.userId = user.id))
   })
 }
 
 function sendUserScore () {
-  return fetch('http://localhost:3000/games', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      user_id: state.userId,
-      score: Math.floor(state.duration)
-    })
-  })
-    .then(resp => resp.json())
-    .then(console.log)
+  //   return fetch('http://localhost:3000/games', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({
+  //       user_id: state.userId,
+  //       score: Math.floor(state.duration)
+  //     })
+  //   })
+  //     .then(resp => resp.json())
+  //     .then(console.log)
 }
 
 function initalize () {
   // setInterval(updateState, 1000/10)
-
+  setInterval(roundTwo, 50)
+  // setInterval(roundOne, 2000)
+  
   setInterval(() => {
     if (!showingWinScreen) {
       state.duration += 1 / framesPerSecond
