@@ -27,3 +27,4 @@ class GamesController < ApplicationController
 
 end
 
+# fetch('http://localhost:3000/games').then(resp => resp.json()).then(console.log)
