@@ -19,11 +19,11 @@ class GamesController < ApplicationController
     end
   end
 
+  def leaders 
+    @leaders = Game.leader_board_data
+    render json: @leaders
+  end 
+
 
 end
-# fetch('http://localhost:3000/games', {
-#     method: 'POST',
-#     headers: { 'Content-Type': 'application/json' },
-#     body: JSON.stringify({user_id: 3, score: 0 })
-# })
-# fetch('http://localhost:3000/games').then(resp => resp.json()).then(console.log)
+
