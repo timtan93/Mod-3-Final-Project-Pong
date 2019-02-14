@@ -14,7 +14,7 @@ let paddleTwoHeight = 100
 let paddleTwoThickness = 10
 let playerOneScore = 0
 let playerTwoScore = 0
-const winningScore = 10
+const winningScore = 30
 let showingWinScreen = false
 let SERVER = 'http://10.218.2.156:3000/state'
 const URL = 'http://localhost:3000/games'
@@ -76,9 +76,10 @@ function winningScreen () {
     }
 
     if (playerTwoScore >= winningScore) {
+      
       canvasContext.fillText(
         `Game Over! You lasted ${Math.round(state.duration)} seconds!`,
-        350,
+        0,
         200
       )
     }
@@ -94,7 +95,7 @@ function drawNet () {
 }
 function drawEverything (evt) {
   // draw the canvas
-  
+
   // paddleTwoHeight =  if (state.duration > 10) {
 
   // } ? canvas.height : paddleTwoHeight
@@ -116,12 +117,19 @@ function drawEverything (evt) {
   colorCircle(ballX, ballY, 10, 'white')
   // canvasContext.fillText(playerOneScore, 100, 100)
   // show the scores
-  canvasContext.fillStyle = 'blue'
+  canvasContext.fillStyle = 'white'
   // ctx.font = "30px Verdana";
+  canvasContext.font = "50px Unknown Font, sans-serif";
+  canvasContext.strokeStyle = "red"; // set stroke color to red
   canvasContext.fillText(
-    `You have ${10 - playerTwoScore} lives left`,
-    canvas.width - 550,
+    `You have ${30 - playerTwoScore} lives left`,
+    canvas.width - 650,
     100
+  )
+  canvasContext.fillText(
+    `Score: ${Math.floor(state.duration)} `,
+    canvas.width - 500,
+    50
   )
 }
 
@@ -139,9 +147,9 @@ function colorCircle (centerX, centerY, radius, drawColor) {
 
 function computerMovement () {
   let paddleTwoYCenter = paddleTwoY + paddleTwoHeight / 2
-  if (paddleTwoYCenter < ballY - 35) {
+  if (paddleTwoYCenter < ballY - 20) {
     paddleTwoY += 6
-  } else if (paddleTwoYCenter > ballY + 35) {
+  } else if (paddleTwoYCenter > ballY + 20) {
     paddleTwoY -= 6
   }
 }
@@ -150,35 +158,40 @@ function moveEverything () {
   if (showingWinScreen) {
     return
   }
-  
+
   computerMovement()
   ballX += ballSpeedX
   ballY += ballSpeedY
   //   paddleTwoThickness += 1
   //   paddleTwoHeight += 1
 
+  if (
+    ballY > paddleTwoY &&
+    ballY < paddleTwoY + paddleTwoHeight &&
+    ballX >= canvas.width - paddleTwoThickness
+  ) {
+    ballSpeedX = -ballSpeedX
+    let diff = ballY - (paddleTwoY + paddleTwoHeight / 2)
+    ballSpeedY = diff * 0.35
+  }
+
+  if (
+    ballY > state.paddleOneY &&
+    ballY < state.paddleOneY + paddleOneHeight &&
+    ballX <= 0 + paddleOneThickness
+  ) {
+    ballSpeedX = -ballSpeedX
+    let diff = ballY - (state.paddleOneY + paddleOneHeight / 2)
+    ballSpeedY = diff * 0.35
+  }
+
   if (ballX <= 0) {
-    if (
-      ballY > state.paddleOneY &&
-      ballY < state.paddleOneY + paddleOneHeight
-    ) {
-      ballSpeedX = -ballSpeedX
-      let diff = ballY - (state.paddleOneY + paddleOneHeight / 2)
-      ballSpeedY = diff * 0.35
-    } else {
-      playerTwoScore++
-      ballReset()
-    }
+    playerTwoScore++
+    ballReset()
   }
   if (ballX >= canvas.width) {
-    if (ballY > paddleTwoY && ballY < paddleTwoY + paddleTwoHeight) {
-      ballSpeedX = -ballSpeedX
-      let diff = ballY - (paddleTwoY + paddleTwoHeight / 2)
-      ballSpeedY = diff * 0.35
-    } else {
-      playerOneScore++
-      ballReset()
-    }
+    playerOneScore++
+    ballReset()
   }
 
   if (ballY <= 0) {
@@ -221,17 +234,43 @@ function handleMouseClick () {
 // }
 
 function roundOne () {
-  return paddleOneHeight = paddleOneHeight * 0.9
+    if (state.duration > 20) {clearInterval(roundOneInterval)}
+  return (paddleOneHeight = paddleOneHeight * 0.9)
   
 }
 
-function roundTwo() {
+function roundTwo () {
+  // if (state.duration < 20 || state.duration > 30) {
+  //   // clearInterval(roundTwoInterval)
+  //   // paddleTwoHeight = 0
+  //   // paddleTwoThickness = 10 
+  //   return 
+  // }
+
+  if (state.duration > 10) {
+    clearInterval(roundTwoInterval)
+    console.log('here')
+    paddleTwoHeight = 0
+    paddleTwoThickness = 10 
+    return; 
+  }
+ 
+  paddleOneHeight = 100
   paddleTwoHeight = 200000000
   paddleTwoThickness += 2
+ 
+   
+    
+   
+  
 }
 
-function roundThree() {
+function roundThree () {
   colorCircle(ballX, ballY, 10, 'white')
+}
+
+function roundFour() {
+
 }
 
 function handleFormSubmit () {
@@ -262,11 +301,13 @@ function sendUserScore () {
   //     .then(console.log)
 }
 
+
+let roundTwoInterval = setInterval(roundTwo, 50)
 function initalize () {
   // setInterval(updateState, 1000/10)
-  setInterval(roundTwo, 50)
-  // setInterval(roundOne, 2000)
   
+  // let roundTwoInterval = setInterval(roundOne, 2000)
+
   setInterval(() => {
     if (!showingWinScreen) {
       state.duration += 1 / framesPerSecond
