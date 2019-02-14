@@ -17,6 +17,7 @@ let showingWinScreen = false
 let SERVER = 'http://10.218.2.156:3000/state'
 const URL = 'http://localhost:3000/games'
 let sent = false
+const roundOneInterval = setInterval(roundOne, 2000)
 const state = {
   paddleOneY: 250,
   userId: null,
@@ -150,7 +151,7 @@ function moveEverything () {
   if (showingWinScreen) {
     return
   }
-
+  
   computerMovement()
   ballX += ballSpeedX
   ballY += ballSpeedY
@@ -231,12 +232,14 @@ function handleMouseClick () {
   }
 }
 
-// function roundOne () {
-//   if (state.duration > 20) {
-//     clearInterval(roundOneInterval)
-//   }
-//   return (paddleOneHeight = paddleOneHeight * 0.9)
-// }
+function roundOne () {
+  if (state.duration > 20) {
+    paddleOneHeight = 100 
+    clearInterval(roundOneInterval)
+  }
+
+  return (paddleOneHeight = paddleOneHeight * 0.9)
+}
 
 // function roundTwo () {
 //   // if (state.duration < 20 || state.duration > 30) {
@@ -298,7 +301,7 @@ function initalize () {
   // setInterval(updateState, 1000/10)
 
   // let roundTwoInterval = setInterval(roundOne, 2000)
-
+  roundOneInterval
   setInterval(() => {
     if (!showingWinScreen) {
       state.duration += 1 / framesPerSecond
