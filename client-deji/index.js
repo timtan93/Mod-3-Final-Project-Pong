@@ -2,8 +2,12 @@ const canvas = document.querySelector('#gameCanvas')
 let canvasContext = canvas.getContext('2d')
 let ballX = 50
 let ballY = 50
+let ball2X = 20
+let ball2Y = 16
 let ballSpeedX = 20
 let ballSpeedY = 4
+let ball2SpeedX = 20
+let ball2SpeedY = 4
 let framesPerSecond = 30
 let paddleOneHeight = 100
 let paddleOneThickness = 10
@@ -12,13 +16,14 @@ let paddleTwoHeight = 100
 let paddleTwoThickness = 10
 let playerOneScore = 0
 let playerTwoScore = 0
-const winningScore = 30
+const winningScore = 10
 let showingWinScreen = false
 let SERVER = 'http://10.218.2.156:3000/state'
 const URL = 'http://localhost:3000/games'
 let sent = false
 const roundOneInterval = setInterval(roundOne, 2000)
 const roundTwoInterval = setInterval(roundTwo, 100)
+let isRoundThree = false 
 const state = {
   paddleOneY: 250,
   userId: null,
@@ -109,6 +114,12 @@ function drawEverything (evt) {
 
   //   draw the ball
   colorCircle(ballX, ballY, 10, 'white')
+  
+  // if (isRoundThree) {
+  //   colorCircle(ball2X, ball2Y, 10, 'red')
+  // }
+
+  isRoundThree ? colorCircle(ball2X, ball2Y, 10, 'red') : null 
   // canvasContext.fillText(playerOneScore, 100, 100)
   // show the scores
   canvasContext.fillStyle = 'white'
@@ -116,7 +127,7 @@ function drawEverything (evt) {
   canvasContext.font = '50px Unknown Font, sans-serif'
   canvasContext.strokeStyle = 'red' // set stroke color to red
   canvasContext.fillText(
-    `You have ${30 - playerTwoScore} lives left`,
+    `You have ${10 - playerTwoScore} lives left`,
     canvas.width - 650,
     100
   )
@@ -152,10 +163,18 @@ function moveEverything () {
   if (showingWinScreen) {
     return
   }
-  
+  roundThree() 
   computerMovement()
   ballX += ballSpeedX
   ballY += ballSpeedY
+  // if (isRoundThree) {
+  //   ball2X += ball2SpeedX
+  //   ball2Y += ball2SpeedY
+  // }
+  ball2X += isRoundThree ?  ball2SpeedX : null 
+  ball2Y += isRoundThree ?  ball2SpeedY : null 
+
+
   //   paddleTwoThickness += 1
   //   paddleTwoHeight += 1
 
@@ -183,6 +202,34 @@ function moveEverything () {
   }
   if (ballY >= canvas.height) {
     ballSpeedY = -ballSpeedY
+  }
+
+  if (isRoundThree) {
+    if (ball2X <= 0) {
+      if (ball2Y > state.paddleOneY && ball2Y < state.paddleOneY + paddleOneHeight) {
+        ball2SpeedX = -ball2SpeedX
+        // let diff = ball2Y - (state.paddleOneY + paddleOneHeight / 2)
+        // ballSpeedY = diff * 0.35
+      } else {
+        playerTwoScore++
+        ball2Reset()
+      }
+    }
+  
+    if (ball2X > canvas.width - paddleTwoThickness) {
+      if (ball2Y > paddleTwoY && ball2Y < paddleTwoY + paddleTwoHeight) {
+        ball2SpeedX = -ball2SpeedX
+      } else {
+        ball2Reset()
+      }
+    }
+  
+    if (ball2Y <= 0) {
+      ball2SpeedY = -ball2SpeedY
+    }
+    if (ball2Y >= canvas.height) {
+      ball2SpeedY = -ball2SpeedY
+    }
   }
 
   // if (
@@ -222,6 +269,16 @@ function ballReset () {
   ballSpeedX = -ballSpeedX
   ballX = canvas.width / 2
   ballY = canvas.height / 2
+
+  
+}
+
+function ball2Reset () {
+  if (isRoundThree) {
+    ball2SpeedX = -ball2SpeedX
+    ball2X = canvas.width / 2
+    ball2Y = canvas.height / 2
+  }
 }
 
 function handleMouseClick () {
@@ -259,9 +316,11 @@ function roundTwo () {
 
 }
 
-// function roundThree () {
-//   colorCircle(ballX, ballY, 10, 'white')
-// }
+function roundThree () {
+  if (state.duration > 40) {
+  isRoundThree = true 
+}
+}
 
 // function roundFour () {}
 
