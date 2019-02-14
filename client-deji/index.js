@@ -181,8 +181,8 @@ function moveEverything () {
   if (ballX <= 0) {
     if (ballY > state.paddleOneY && ballY < state.paddleOneY + paddleOneHeight) {
       ballSpeedX = -ballSpeedX
-      // let diff = ballY - (state.paddleOneY + paddleOneHeight / 2)
-      // ballSpeedY = diff * 0.35
+      let diff = ballY - (state.paddleOneY + paddleOneHeight / 2)
+      ballSpeedY = diff * 0.35
     } else {
       playerTwoScore++
       ballReset()
