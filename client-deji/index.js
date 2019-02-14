@@ -250,7 +250,7 @@ function roundTwo () {
   if (state.duration > 10) {
     clearInterval(roundTwoInterval)
     console.log('here')
-    paddleTwoHeight = 0
+    paddleTwoHeight = 100
     paddleTwoThickness = 10 
     return; 
   }
