@@ -19,7 +19,12 @@ class GamesController < ApplicationController
     end
   end
 
+  def leaders 
+    @leaders = Game.leader_board_data
+    render json: @leaders
+  end 
+
 
 end
-s
+
 # fetch('http://localhost:3000/games').then(resp => resp.json()).then(console.log)

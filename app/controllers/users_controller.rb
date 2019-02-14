@@ -27,18 +27,18 @@ end
 # })
   # games.sort(function(a, b){return b.score - a.score})
   # unique = [...new Set(sorted.map(game => game.user_id))]
-  function doIt() {
-let newA = []
-	for (let i = 0; i < sorted.length; i++) {
-
-	if (map[sorted[i].user_id]) {
-} else {
-
-	map[sorted[i].user_id] = 'done'
-	newA.push(sorted[i])
-
-}
-
-}
-return newA
-}
+#   function doIt() {
+# let newA = []
+# 	for (let i = 0; i < sorted.length; i++) {
+#
+# 	if (map[sorted[i].user_id]) {
+# } else {
+#
+# 	map[sorted[i].user_id] = 'done'
+# 	newA.push(sorted[i])
+#
+# }
+#
+# }
+# return newA
+# }
