@@ -62,19 +62,22 @@ const draw = () => {
   ctx.restore()
 }
 
-canvas()
-paddleDimensions()
-loop()
-setInterval(updateState, 100)
+// canvas()
+// paddleDimensions()
+// loop()
+// setInterval(updateState, 100)
 
 // function updateState () {
-//   fetch(SERVER)
-//     .then(resp => resp.json())
-//     .then(newState => state.paddleOneY = newState.paddleOneY).then(console.log)
-//
+  // fetch(SERVER)
+  //   .then(resp => resp.json())
+  //   .then(newState => state.paddleOneY = newState.paddleOneY).then(console.log)
+
 //   fetch(SERVER, {
 //     method: 'POST',
 //     headers: { 'Content-Type': 'application/json' },
 //     body: JSON.stringify(state)
 //   })
 // }
+
+
+
