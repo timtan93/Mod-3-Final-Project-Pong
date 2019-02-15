@@ -290,7 +290,6 @@ function handleMouseClick () {
   }
 }
 
-<<<<<<< HEAD
 // function updateState() {
 //
 //     // get request to update state
@@ -303,7 +302,7 @@ function handleMouseClick () {
     // })
 //
 // }
-=======
+
 function roundOne () {
   if (state.duration > 20) {
     paddleOneHeight = 100 
@@ -335,7 +334,7 @@ function roundThree () {
   isRoundThree = true 
 }
 }
->>>>>>> 1cb3ded6f3c983dbef049eedccecd58dfcea8e31
+
 
 // function roundFour () {}
 
