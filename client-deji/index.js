@@ -62,25 +62,27 @@ function winningScreen () {
     //   fetch(URL, {
     //     method: 'POST',
     //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({user_id: 3, score: 0 })
+    //     body: JSON.stringify({user_id: state.userId, score: state.duration })
     //  })
 
-    // if (playerOneScore >= winningScore) {
-    //   canvasContext.fillText('Left player won!!!', 350, 200)
-    // } else
+   
     if (!sent) {
-      // sendUserScore()
-      //   .then(getGames)
-      //   .then(getUsers)
+      sendUserScore()
+        .then(getGames)
+        .then(getUsers)
+        .then(getLeadersArray)
+        .then(addLeaders(leaderboard))
       sent = true
     }
 
     if (playerTwoScore >= winningScore) {
-      canvasContext.fillText(
+      setTimeout(canvasContext.fillText(
         `Game Over! You lasted ${Math.round(state.duration)} seconds!`,
         0,
         200
-      )
+      ), 3000)
+      addLeaders(leaderboard)
+      
     }
 
     canvasContext.fillText('click to continue', 350, 500)
@@ -181,8 +183,8 @@ function moveEverything () {
   if (ballX <= 0) {
     if (ballY > state.paddleOneY && ballY < state.paddleOneY + paddleOneHeight) {
       ballSpeedX = -ballSpeedX
-      let diff = ballY - (state.paddleOneY + paddleOneHeight / 2)
-      ballSpeedY = diff * 0.35
+      // let diff = ballY - (state.paddleOneY + paddleOneHeight / 2)
+      // ballSpeedY = diff * 0.35
     } else {
       playerTwoScore++
       ballReset()
@@ -343,27 +345,27 @@ function handleFormSubmit () {
     event.preventDefault()
     sent = false
     initalize()
-    // fetch('http://localhost:3000/users', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ name: event.target.name.value })
-    // })
-    //   .then(resp => resp.json())
-    //   .then(user => (state.userId = user.id))
+    fetch('http://localhost:3000/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: event.target.name.value })
+    })
+      .then(resp => resp.json())
+      .then(user => (state.userId = user.id))
   })
 }
 
 function sendUserScore () {
-  //   return fetch('http://localhost:3000/games', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({
-  //       user_id: state.userId,
-  //       score: Math.floor(state.duration)
-  //     })
-  //   })
-  //     .then(resp => resp.json())
-  //     .then(console.log)
+    return fetch('http://localhost:3000/games', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: state.userId,
+        score: Math.floor(state.duration)
+      })
+    })
+      .then(resp => resp.json())
+      .then(console.log)
 }
 
 // let roundTwoInterval = setInterval(roundTwo, 50)
@@ -404,13 +406,13 @@ function initalize () {
 
 handleFormSubmit()
 
-// const getLeadersArray = () =>{
-//     return fetch(`http://localhost:3000/leaders`)
-//           .then(resp => resp.json())
-//           .then(leaders => leaderboard = leaders)
-//           .then(console.log)
-// }
-// const leaderboard =
+const getLeadersArray = () =>{
+    return fetch(`http://localhost:3000/leaders`)
+          .then(resp => resp.json())
+          .then(leaders => state.leaderboard = leaders)
+          .then(console.log)
+}
+//  const leaderboard =
 // [{"name":"Tim", "score":80},
 // {"name":"Deji", "score":65},
 // {"name":"John", "score":33},
@@ -422,19 +424,20 @@ handleFormSubmit()
 // body = document.querySelector("body")
 // body.appendChild(leadertable)
 
-// const addALeader = (player) => {
-//     const tr = document.createElement('tr')
-//     tr.innerHTML =`<td>${player.name}</td><td>${player.score}</td>`
-//     leadertable.appendChild(tr)
-// }
+const addALeader = (player) => {
+    const tr = document.createElement('tr')
+    tr.innerHTML =`<td>${player.name}</td><td>${player.score}</td>`
+    leadertable.appendChild(tr)
+}
 
-// const addLeaders = leaders => {
-//     leadertable.innerHTML =""
-//     const header = document.createElement("tr")
-//     header.innerHTML = '<th>Player</th><th>High <br> Score</th>'
-//     leadertable.appendChild(header)
-//     for (const leader of leaders)
-//     addALeader(leader)
-// }
+const addLeaders = leaders => {
+    leadertable.innerHTML =""
+    const header = document.createElement("tr")
+    header.innerHTML = '<th>Player</th><th>High <br> Score</th>'
+    leadertable.appendChild(header)
+    for (const leader of leaders)
+    addALeader(leader)
+}
 
-// addLeaders(leaderboard)
+
+
