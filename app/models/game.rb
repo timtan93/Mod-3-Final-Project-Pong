@@ -2,11 +2,11 @@ class Game < ApplicationRecord
   belongs_to :user
 
   def self.sort_score_desc
-    Game.all.sort_by{|game| game[:score]}.reverse
+    Game.all.sort_by{|game| game[:score].to_i}.reverse
   end
 
-  def self.unique_scores(game)
-    game.uniq {|game| game[:user_id]}
+  def self.unique_scores(games)
+    games.uniq {|game| game[:user_id]}
   end
 
   def self.leader_board
@@ -14,7 +14,7 @@ class Game < ApplicationRecord
     Game.unique_scores(sorted)
   end
 
-  def self.leader_board_data
+    def self.leader_board_data
     names = []
     scores = []
     Game.leader_board.each { |game| names << game.user.name }
@@ -35,9 +35,8 @@ class Game < ApplicationRecord
             end 
           end 
         end
-        top5 
+        top5.take(5)
+       
     end 
 end
-
-
 
