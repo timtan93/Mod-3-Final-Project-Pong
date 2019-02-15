@@ -10,8 +10,8 @@ class UsersController < ApplicationController
     render json: @user
   end
   def create
-    @user = User.new(name: params[:name], )
-    if @user.save
+    @user = User.find_or_create_by(name: params[:name], )
+    if @user
       render json: @user
     else
       render json: {error: 'Unable to create user.'}, status: 400

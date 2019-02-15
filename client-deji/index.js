@@ -6,7 +6,7 @@ let ball2X = 20
 let ball2Y = 16
 let ballSpeedX = 20
 let ballSpeedY = 4
-let ball2SpeedX = 20
+let ball2SpeedX = 19
 let ball2SpeedY = 4
 let framesPerSecond = 30
 let paddleOneHeight = 100
@@ -16,11 +16,11 @@ let paddleTwoHeight = 100
 let paddleTwoThickness = 10
 let playerOneScore = 0
 let playerTwoScore = 0
-const winningScore = 10
+const winningScore = 17
 let showingWinScreen = false
 let SERVER = 'http://10.218.2.156:3000/state'
 const URL = 'http://localhost:3000/games'
-let sent = false
+// let sent = false
 const roundOneInterval = setInterval(roundOne, 2000)
 const roundTwoInterval = setInterval(roundTwo, 100)
 let isRoundThree = false 
@@ -29,7 +29,9 @@ const state = {
   userId: null,
   duration: 0,
   games: null,
-  users: null
+  users: null,
+  sent: false,
+  leaderboard: []
 }
 
 function calculateMousePosition (evt) {
@@ -43,51 +45,52 @@ function calculateMousePosition (evt) {
   }
 }
 
-function getGames () {
-  // return fetch('http://localhost:3000/games')
-  //   .then(resp => resp.json())
-  //   .then(games => (state.games = games))
-}
 
-function getUsers () {
-  // return fetch('http://localhost:3000/users')
-  //   .then(resp => resp.json())
-  //   .then(users => (state.users = users))
-}
+
 
 function winningScreen () {
   colorRect(0, 0, canvas.width, canvas.height, 'black')
   if (showingWinScreen) {
-    canvasContext.fillStyle = 'white'
-    //   fetch(URL, {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({user_id: state.userId, score: state.duration })
-    //  })
+    canvasContext.fillStyle = 'white';
 
-   
-    if (!sent) {
-      sendUserScore()
-        .then(getGames)
-        .then(getUsers)
-        .then(getLeadersArray)
-        .then(addLeaders(leaderboard))
-      sent = true
-    }
-
-    if (playerTwoScore >= winningScore) {
-      setTimeout(canvasContext.fillText(
-        `Game Over! You lasted ${Math.round(state.duration)} seconds!`,
-        0,
-        200
-      ), 3000)
-      addLeaders(leaderboard)
+    if (!state.sent) {
       
-    }
+    (function sendUserScore () {
+
+      return fetch('http://10.218.6.157:3000/games', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: state.userId,
+          score: Math.floor(state.duration)
+        })
+      })
+        .then(resp => resp.json())
+        .then(console.log)
+  })().then(getLeadersArray).then()
+  state.sent = true;
+}
+
+  }
+
+  
+   
+    
+
+    
+
+    // if (playerTwoScore >= winningScore) {
+    //   setTimeout(canvasContext.fillText(
+    //     `Game Over! You lasted ${Math.round(state.duration)} seconds!`,
+    //     0,
+    //     200
+    //   ), 3000)
+      
+    
 
     canvasContext.fillText('click to continue', 350, 500)
   }
-}
+
 
 function drawNet () {
   for (let i = 0; i < canvas.height; i += 40) {
@@ -129,7 +132,7 @@ function drawEverything (evt) {
   canvasContext.font = '50px Unknown Font, sans-serif'
   canvasContext.strokeStyle = 'red' // set stroke color to red
   canvasContext.fillText(
-    `You have ${10 - playerTwoScore} lives left`,
+    `You have ${17 - playerTwoScore} lives left`,
     canvas.width - 650,
     100
   )
@@ -289,6 +292,7 @@ function handleMouseClick () {
     playerTwoScore = 0
     showingWinScreen = false
     state.duration = 0
+    init() 
   }
 }
 
@@ -343,9 +347,10 @@ function roundThree () {
 function handleFormSubmit () {
   document.querySelector('form').addEventListener('submit', () => {
     event.preventDefault()
+    console.log('here')
     sent = false
     initalize()
-    fetch('http://localhost:3000/users', {
+    fetch('http://10.218.6.157:3000/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: event.target.name.value })
@@ -355,18 +360,7 @@ function handleFormSubmit () {
   })
 }
 
-function sendUserScore () {
-    return fetch('http://localhost:3000/games', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user_id: state.userId,
-        score: Math.floor(state.duration)
-      })
-    })
-      .then(resp => resp.json())
-      .then(console.log)
-}
+
 
 // let roundTwoInterval = setInterval(roundTwo, 50)
 function initalize () {
@@ -407,10 +401,10 @@ function initalize () {
 handleFormSubmit()
 
 const getLeadersArray = () =>{
-    return fetch(`http://localhost:3000/leaders`)
+    return fetch(`http://10.218.6.157:3000/leaders`)
           .then(resp => resp.json())
           .then(leaders => state.leaderboard = leaders)
-          .then(console.log)
+          .then(addLeaders)
 }
 //  const leaderboard =
 // [{"name":"Tim", "score":80},
@@ -418,11 +412,11 @@ const getLeadersArray = () =>{
 // {"name":"John", "score":33},
 // {"name":"hhh", "score":24},
 // {"name":"Harry", "score":0}]
-// const leadertable = document.createElement("table")
-// leadertable.className = "leaderboard"
-// leadertable.cellspace= 0
-// body = document.querySelector("body")
-// body.appendChild(leadertable)
+const leadertable = document.createElement("table")
+leadertable.className = "leaderboard"
+leadertable.cellspace= 0
+body = document.querySelector("body")
+body.appendChild(leadertable)
 
 const addALeader = (player) => {
     const tr = document.createElement('tr')
@@ -430,13 +424,14 @@ const addALeader = (player) => {
     leadertable.appendChild(tr)
 }
 
-const addLeaders = leaders => {
+const addLeaders = () => {
     leadertable.innerHTML =""
     const header = document.createElement("tr")
     header.innerHTML = '<th>Player</th><th>High <br> Score</th>'
     leadertable.appendChild(header)
-    for (const leader of leaders)
+    for (const leader of state.leaderboard){
     addALeader(leader)
+    }
 }
 
 
