@@ -1,14 +1,14 @@
-// const getLeadersArray = () =>{
-//     return fetch(`http://localhost:3000/leaders`)
-//           .then(resp => resp.json())
-//           .then(console.log)
-// }
-const leaderboard = 
-[{"name":"Tim", "score":80}, 
-{"name":"Deji", "score":65}, 
-{"name":"John", "score":33}, 
-{"name":"hhh", "score":24}, 
-{"name":"Harry", "score":0}] 
+const getLeadersArray = () =>{
+    return fetch(`http://localhost:3000/leaders`)
+          .then(resp => resp.json())
+          .then(leaderboard => addLeaders(leaderboard))
+}
+// const leaderboard = 
+// [{"name":"Tim", "score":80}, 
+// {"name":"Deji", "score":65}, 
+// {"name":"John", "score":33}, 
+// {"name":"hhh", "score":24}, 
+// {"name":"Harry", "score":0}] 
 const leadertable = document.createElement("table")
 leadertable.className = "leaderboard"
 leadertable.cellspace= 0
@@ -31,4 +31,4 @@ const addLeaders = leaders => {
     addALeader(leader)
 }
 
-addLeaders(leaderboard)
+getLeadersArray()

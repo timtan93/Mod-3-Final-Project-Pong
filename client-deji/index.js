@@ -158,11 +158,11 @@ function handleMouseClick () {
 //     // get request to update state
 //     fetch(SERVER).then(resp => resp.json()).then(newState => state.paddleOneY = newState.paddleOneY).then(console.log)
 //
-//     fetch(SERVER, {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify(state)
-//     })
+    // fetch(SERVER, {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(state)
+    // })
 //
 // }
 
