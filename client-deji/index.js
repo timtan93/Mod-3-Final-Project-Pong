@@ -8,7 +8,7 @@ let ballSpeedX = 20
 let ballSpeedY = 4
 let ball2SpeedX = 19
 let ball2SpeedY = 4
-let framesPerSecond = 30
+let framesPerSecond = 60
 let paddleOneHeight = 100
 let paddleOneThickness = 10
 let paddleTwoY = 250
@@ -16,7 +16,7 @@ let paddleTwoHeight = 100
 let paddleTwoThickness = 10
 let playerOneScore = 0
 let playerTwoScore = 0
-const winningScore = 17
+const winningScore = 27
 let showingWinScreen = false
 let SERVER = 'http://10.218.2.156:3000/state'
 const URL = 'http://localhost:3000/games'
@@ -24,6 +24,7 @@ const URL = 'http://localhost:3000/games'
 const roundOneInterval = setInterval(roundOne, 2000)
 const roundTwoInterval = setInterval(roundTwo, 100)
 let isRoundThree = false 
+let isRoundTwo = false 
 const state = {
   paddleOneY: 250,
   userId: null,
@@ -118,7 +119,7 @@ function drawEverything (evt) {
   )
 
   //   draw the ball
-  colorCircle(ballX, ballY, 10, 'white')
+  colorCircle(ballX, ballY, 10, 'green')
   
   // if (isRoundThree) {
   //   colorCircle(ball2X, ball2Y, 10, 'red')
@@ -132,7 +133,7 @@ function drawEverything (evt) {
   canvasContext.font = '50px Unknown Font, sans-serif'
   canvasContext.strokeStyle = 'red' // set stroke color to red
   canvasContext.fillText(
-    `You have ${17 - playerTwoScore} lives left`,
+    `You have ${27 - playerTwoScore} lives left`,
     canvas.width - 650,
     100
   )
@@ -194,13 +195,25 @@ function moveEverything () {
     }
   }
 
-  if (ballX > canvas.width - paddleTwoThickness) {
-    if (ballY > paddleTwoY && ballY < paddleTwoY + paddleTwoHeight) {
-      ballSpeedX = -ballSpeedX
+  if (isRoundTwo) {
+    if (ballX > (canvas.width - paddleTwoThickness)) {
+      ballX = (canvas.width - paddleTwoThickness) - 1
+        ballSpeedX = -ballSpeedX
+      } 
     } else {
-      ballReset()
+      if (ballX > (canvas.width - paddleTwoThickness)) {
+        if (ballY > paddleTwoY && ballY < paddleTwoY + paddleTwoHeight) {
+          ballSpeedX = -ballSpeedX
+        } else {
+          ballReset()
+        }
+      }
     }
-  }
+  
+
+  
+
+ 
 
   if (ballY <= 0) {
     ballSpeedY = -ballSpeedY
@@ -322,11 +335,15 @@ function roundTwo () {
   if (state.duration > 40) {
       paddleTwoHeight = 100
       paddleTwoThickness = 10
+      isRoundTwo = false 
     clearInterval(roundTwoInterval)
 
   }
 
   if (state.duration > 20) {
+          console.log(ballX)
+          isRoundTwo = true
+          let diff =  
           paddleTwoHeight = 200000000
           paddleTwoThickness += 2
 
