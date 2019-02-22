@@ -18,8 +18,9 @@ let playerOneScore = 0
 let playerTwoScore = 0
 const winningScore = 27
 let showingWinScreen = false
-let SERVER = 'http://10.218.3.210:3000/state'
-const URL = 'http://localhost:3000/games'
+const baseURL = 'http://localhost:3000'
+let SERVER = `${baseURL}/state`
+const URL = `${baseURL}/games`
 // let sent = false
 const roundOneInterval = setInterval(roundOne, 2000)
 const roundTwoInterval = setInterval(roundTwo, 100)
@@ -58,7 +59,7 @@ function winningScreen () {
       
     (function sendUserScore () {
 
-      return fetch('http://10.218.3.210:3000/games', {
+      return fetch(`${baseURL}/games`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -367,7 +368,7 @@ function handleFormSubmit () {
     console.log('here')
     sent = false
     initalize()
-    fetch('http://10.218.3.210:3000/users', {
+    fetch(`${baseURL}/users`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: event.target.name.value })
@@ -418,7 +419,7 @@ function initalize () {
 handleFormSubmit()
 
 const getLeadersArray = () =>{
-    return fetch(`http://10.218.3.210:3000/leaders`)
+    return fetch(`${baseURL}/leaders`)
           .then(resp => resp.json())
           .then(leaders => state.leaderboard = leaders)
           .then(addLeaders)

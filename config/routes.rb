@@ -8,4 +8,5 @@ Rails.application.routes.draw do
   post '/state', to: 'state#edit'
   get '/pong', to: 'state#pong'
   get '/leaders', to: 'games#leaders'
+  
 end
